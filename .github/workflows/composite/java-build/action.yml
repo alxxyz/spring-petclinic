@@ -16,4 +16,4 @@ runs:
     uses: actions/upload-artifact@v3
     with:
       name: spring-petclinic
-      path: /home/runner/work/spring-petclinic/spring-petclinic/target/
+      path: /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/target/
