@@ -5,7 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
-      - uses: actions/checkout@v2
       - name: Build & upload
         uses: ./.github/workflows/composite/java-build
         
