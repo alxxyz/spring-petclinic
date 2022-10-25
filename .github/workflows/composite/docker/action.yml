@@ -1,0 +1,55 @@
+name: 'Docker'
+
+inputs:
+  build-artifact:
+    description: 'Build Artifact path'
+    required: false
+    default: 'spring-petclinic'
+  context:
+    description: 'Docker file context path'
+    required: false
+    default: './'
+  registry:
+    description: 'GH Registry'
+    required: false
+    default: ghcr.io
+  github-token:
+    description: 'GH Token'
+    required: false
+  image-name:
+    description: 'Image name'
+    required: false
+    default: alxxyz/spring-petclinic
+    
+runs:
+  using: 'composite'
+  steps:
+
+  - name: Download
+    uses: actions/download-artifact@v2
+    with:
+      name: ${{ inputs.build-artifact }}
+      path: target
+
+  - name: container registry
+    uses: docker/login-action@v1
+    with:
+      registry: ${{ inputs.registry }}
+      username: ${{ github.actor }}
+      password: ${{ inputs.github-token }}
+
+  - name: Extract metadata (tags, labels) for Docker
+    id: meta
+    uses: docker/metadata-action@v3
+    with:
+      images: ${{ inputs.registry }}/${{ inputs.image-name }}
+      tags: |
+        type=semver,pattern={{version}},value=${{steps.gitversion.outputs.majorMinorPatch}}
+
+  - name: Build and Push
+    uses: docker/build-push-action@v2
+    with:
+      context: ${{ inputs.context }}
+      push: false
+      tags:  ${{ steps.meta.outputs.tags }}
+      labels:  ${{ steps.meta.outputs.labels }}
