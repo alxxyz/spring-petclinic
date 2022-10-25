@@ -16,7 +16,6 @@ inputs:
   github-token:
     description: 'GH Token'
     required: false
-    default: ${{ secrets.GITHUB_TOKEN }}
   image-name:
     description: 'Image name'
     required: false
